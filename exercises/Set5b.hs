@@ -164,6 +164,7 @@ isOrdered = isOrdered'
 
 isOrdered' Empty = True
 isOrdered' (Node x l r) = (allValues (<x) l) && (allValues (>x) r) && (isOrdered' l) && (isOrdered' r)
+
 ------------------------------------------------------------------------------
 -- Ex 8: a path in a tree can be represented as a list of steps that
 -- go either left or right.
@@ -181,7 +182,10 @@ data Step = StepL | StepR
 --   walk [StepL,StepL] (Node 1 (Node 2 Empty Empty) Empty)  ==>  Nothing
 
 walk :: [Step] -> Tree a -> Maybe a
-walk = todo
+walk _ Empty = Nothing
+walk [] (Node x _ _) = Just x
+walk (StepL:steps) (Node x l r) = walk steps l
+walk (StepR:steps) (Node x l r) = walk steps r
 
 ------------------------------------------------------------------------------
 -- Ex 9: given a tree, a path and a value, set the value at the end of
@@ -202,7 +206,10 @@ walk = todo
 --   set [StepL,StepR] 1 (Node 0 Empty Empty)  ==>  (Node 0 Empty Empty)
 
 set :: [Step] -> a -> Tree a -> Tree a
-set path val tree = todo
+set _ _ Empty = Empty
+set [] val (Node x l r) = Node val l r
+set (StepL:steps) val (Node x l r) = Node x (set steps val l) r
+set (StepR:steps) val (Node x l r) = Node x l (set steps val r)
 
 ------------------------------------------------------------------------------
 -- Ex 10: given a value and a tree, return a path that goes from the
@@ -218,4 +225,18 @@ set path val tree = todo
 --                    (Node 5 Empty Empty))                     ==>  Just [StepL,StepR]
 
 search :: Eq a => a -> Tree a -> Maybe [Step]
-search = todo
+search val Empty = Nothing
+search val (Node x l r) = if x == val 
+                          then Just []
+                          else if p == [] 
+                               then Nothing 
+                               else Just p
+                               where p = (search' [] val (Node x l r))
+
+
+search' :: Eq a => [Step] -> a -> Tree a -> [Step]
+search' path val Empty = []
+search' path val (Node x l r) = if x == val
+                                then path
+                                else (search' (path++[StepR]) val r) ++ (search' (path++[StepL]) val l)
+
