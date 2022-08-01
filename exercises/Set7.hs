@@ -108,10 +108,23 @@ add' soFar m (Set (x:xs))
 data Event = AddEggs | AddFlour | AddSugar | Mix | Bake
   deriving (Eq,Show)
 
-data State = Start | Error | Finished
+data State = Start | Error | Finished | WithEggs | WithEggsFlour | WithEggsSugar | RdyForMix | Mixed
   deriving (Eq,Show)
 
-step = todo
+step Start AddEggs = WithEggs
+step Start _ = Error
+step WithEggs AddFlour = WithEggsFlour
+step WithEggs AddSugar = WithEggsSugar
+step WithEggs _ = Error
+step WithEggsFlour AddSugar = RdyForMix
+step WithEggsFlour _ = Error
+step WithEggsSugar AddFlour = RdyForMix
+step WithEggsSugar _ = Error
+step RdyForMix Mix = Mixed
+step RdyForMix _ = Error
+step Mixed Bake = Finished
+step Mixed _ = Error
+step x _ = x
 
 -- do not edit this
 bake :: [Event] -> State
@@ -131,7 +144,12 @@ bake events = go Start events
 --   average (1.0 :| [2.0,3.0])  ==>  2.0
 
 average :: Fractional a => NonEmpty a -> a
-average = todo
+average x = (sum x) / (fromIntegral . Data.List.NonEmpty.length $ x)
+
+-- sumNonEmpty :: Fractional a => NonEmpty a -> a
+-- sumNonEmpty (x :| xs) = case (nonEmpty xs) of Nothing -> x
+--                                               Just y -> x + sumNonEmpty y
+
 
 ------------------------------------------------------------------------------
 -- Ex 5: reverse a NonEmpty list.
