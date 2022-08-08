@@ -144,7 +144,7 @@ bake events = go Start events
 --   average (1.0 :| [2.0,3.0])  ==>  2.0
 
 average :: Fractional a => NonEmpty a -> a
-average x = (sum x) / (fromIntegral . Data.List.NonEmpty.length $ x)
+average x = (sum x) / (fromIntegral . length $ x)
 
 -- sumNonEmpty :: Fractional a => NonEmpty a -> a
 -- sumNonEmpty (x :| xs) = case (nonEmpty xs) of Nothing -> x
@@ -156,9 +156,33 @@ average x = (sum x) / (fromIntegral . Data.List.NonEmpty.length $ x)
 --
 -- PS. The Data.List.NonEmpty type has been imported for you
 
-reverseNonEmpty :: NonEmpty a -> NonEmpty a
-reverseNonEmpty = todo
+nonEmpty :: [a] -> Maybe (NonEmpty a)
+nonEmpty [] = Nothing
+nonEmpty (x:xs) = Just (x :| xs)
 
+reverseNonEmpty :: NonEmpty a -> NonEmpty a
+reverseNonEmpty ne = go ne []
+                     where go (x :| xs) result = case (nonEmpty xs) of Just y -> go y (x : result) 
+                                                                       Nothing -> x :| result
+
+-- reverseNonEmpty (x :| []) = x
+-- reverseNonEmpty (x :| xs) = combineNonEmpty (reverseNonEmpty go (xs)) [x]
+
+-- combineNonEmpty :: NonEmpty a -> NonEmpty a -> NonEmpty a
+-- combineNonEmpty x:|[] y = x :| y
+-- combineNonEmpty x:|xx:|xs y = x :| xx :| (combineNonEmpty xs y)
+
+
+-- reverseNonEmpty x = nonEmpty (go (toList x) [])
+
+-- go :: List a -> List a -> List a
+-- go [] b = b
+-- go (f:fs) b = go (fs) (f:b)
+
+
+-- go :: NonEmpty a -> NonEmpty a -> NonEmpty a
+-- go [] b = b
+-- go (f:fs) b = go (fs) (f:b)
 ------------------------------------------------------------------------------
 -- Ex 6: implement Semigroup instances for the Distance, Time and
 -- Velocity types from exercise 1. The instances should perform
@@ -168,8 +192,14 @@ reverseNonEmpty = todo
 --
 -- velocity (Distance 50 <> Distance 10) (Time 1 <> Time 2)
 --    ==> Velocity 20
+instance Semigroup Velocity where
+  (<>) (Velocity x) (Velocity y) = Velocity (x+y)
 
+instance Semigroup Distance where
+  (Distance x) <> (Distance y) = Distance (x + y)
 
+instance Semigroup Time where
+  (Time x) <> (Time y) = Time (x + y)
 ------------------------------------------------------------------------------
 -- Ex 7: implement a Monoid instance for the Set type from exercise 2.
 -- The (<>) operation should be the union of sets.
