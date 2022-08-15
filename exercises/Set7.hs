@@ -208,7 +208,17 @@ instance Semigroup Time where
 --
 -- What are the class constraints for the instances?
 
+instance Ord a => Semigroup (Set a) where 
+  (<>) (Set a) (Set b) = setUnion (Set a) (Set b)
 
+instance Ord a => Monoid (Set a) where
+  mempty = emptySet
+
+setUnion :: Ord a => Set a -> Set a -> Set a
+setUnion (Set (x:xs)) s = setUnion (Set xs) (add x s)
+setUnion (Set []) s = s
+
+-- Set [-2] <> Set [2] = setUnion (Set (-2:[])) (Set [2]) = setUnion (Set []) (Set [-2, 2])
 ------------------------------------------------------------------------------
 -- Ex 8: below you'll find two different ways of representing
 -- calculator operations. The type Operation1 is a closed abstraction,
@@ -230,29 +240,41 @@ instance Semigroup Time where
 
 data Operation1 = Add1 Int Int
                 | Subtract1 Int Int
+                | Multiply1 Int Int
   deriving Show
 
 compute1 :: Operation1 -> Int
 compute1 (Add1 i j) = i+j
 compute1 (Subtract1 i j) = i-j
+compute1 (Multiply1 i j) = i * j
 
 show1 :: Operation1 -> String
-show1 = todo
+show1 (Add1 i j) = (show i) ++ "+" ++ (show j)
+show1 (Subtract1 i j) = (show i) ++ "-" ++ (show j)
+show1 (Multiply1 i j) = (show i) ++ "*" ++ (show j)
 
 data Add2 = Add2 Int Int
   deriving Show
 data Subtract2 = Subtract2 Int Int
   deriving Show
+data Multiply2 = Multiply2 Int Int
+  deriving Show
 
 class Operation2 op where
   compute2 :: op -> Int
+  show2 :: op -> String
 
 instance Operation2 Add2 where
   compute2 (Add2 i j) = i+j
+  show2 (Add2 i j) = (show i) ++ "+" ++ (show j)
 
 instance Operation2 Subtract2 where
   compute2 (Subtract2 i j) = i-j
+  show2 (Subtract2 i j) = (show i) ++ "-" ++ (show j)
 
+instance Operation2 Multiply2 where
+  compute2 (Multiply2 i j) = i*j
+  show2 (Multiply2 i j) = (show i) ++ "*" ++ (show j)
 
 ------------------------------------------------------------------------------
 -- Ex 9: validating passwords. Below you'll find a type
@@ -281,7 +303,12 @@ data PasswordRequirement =
   deriving Show
 
 passwordAllowed :: String -> PasswordRequirement -> Bool
-passwordAllowed = todo
+passwordAllowed s (MinimumLength i) = (length s) >= i
+passwordAllowed s (ContainsSome []) = False
+passwordAllowed s (ContainsSome (ss:sss)) = member ss (Set s) || (passwordAllowed s (ContainsSome sss))
+passwordAllowed s (DoesNotContain ss) = not (passwordAllowed s (ContainsSome ss))
+passwordAllowed s (And pr1 pr2) = (&&) (passwordAllowed s pr1) (passwordAllowed s pr2)
+passwordAllowed s (Or pr1 pr2) = (||) (passwordAllowed s pr1) (passwordAllowed s pr2)
 
 ------------------------------------------------------------------------------
 -- Ex 10: a DSL for simple arithmetic expressions with addition and
@@ -303,17 +330,22 @@ passwordAllowed = todo
 --     ==> "(3*(1+1))"
 --
 
-data Arithmetic = Todo
+data Arithmetic = 
+  Literal Integer 
+  | Operation String Arithmetic Arithmetic
   deriving Show
 
 literal :: Integer -> Arithmetic
-literal = todo
+literal n = Literal n
 
 operation :: String -> Arithmetic -> Arithmetic -> Arithmetic
-operation = todo
+operation s a1 a2 = Operation s a1 a2
 
 evaluate :: Arithmetic -> Integer
-evaluate = todo
+evaluate (Literal i) = i
+evaluate (Operation "+" a b) = (+) (evaluate a) (evaluate b)
+evaluate (Operation "*" a b) = (*) (evaluate a) (evaluate b)
 
 render :: Arithmetic -> String
-render = todo
+render (Literal i) = show i
+render (Operation o a b) = "(" ++ (render a) ++ o ++ (render b) ++ ")"
