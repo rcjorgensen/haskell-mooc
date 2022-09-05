@@ -251,10 +251,13 @@ rectangle x0 y0 w h = Shape f
 -- shape.
 
 union :: Shape -> Shape -> Shape
-union = todo
+union (Shape f) (Shape g) = Shape h 
+  where h x = (f x) || (g x)
 
 cut :: Shape -> Shape -> Shape
-cut = todo
+cut (Shape f) (Shape g) = Shape h
+  where h x = (f x) && not (g x)
+
 ------------------------------------------------------------------------------
 
 -- Here's a snowman, built using union from circles and rectangles.
@@ -282,7 +285,10 @@ exampleSnowman = fill white snowman
 --        ["000000","000000","000000"]]
 
 paintSolid :: Color -> Shape -> Picture -> Picture
-paintSolid color shape base = todo
+paintSolid color (Shape s) (Picture base) = Picture f
+  where f c = if s c then color
+                           else base c
+
 ------------------------------------------------------------------------------
 
 allWhite :: Picture
@@ -327,7 +333,11 @@ stripes a b = Picture f
 --       ["000000","000000","000000","000000","000000"]]
 
 paint :: Picture -> Shape -> Picture -> Picture
-paint pat shape base = todo
+paint (Picture pat) (Shape s) (Picture base) = Picture f
+  where f c = if s c then pat c 
+                     else base c
+
+
 ------------------------------------------------------------------------------
 
 -- Here's a patterned version of the snowman example. See it by running:
@@ -390,19 +400,25 @@ xy = Picture f
 data Fill = Fill Color
 
 instance Transform Fill where
-  apply = todo
+  apply (Fill color) p = Picture g
+    where g = const color
 
 data Zoom = Zoom Int
   deriving Show
 
 instance Transform Zoom where
-  apply = todo
+  apply (Zoom z) p = zoom z p
 
 data Flip = FlipX | FlipY | FlipXY
   deriving Show
 
 instance Transform Flip where
-  apply = todo
+  apply FlipXY p = flipXY p
+  apply FlipX (Picture f) = Picture (f . flipCoorX)
+    where flipCoorX (Coord x y) = (Coord (-x) y)
+  apply FlipY (Picture f) = Picture (f . flipCoorY)
+    where flipCoorY (Coord x y) = (Coord x (-y))
+
 ------------------------------------------------------------------------------
 
 ------------------------------------------------------------------------------
