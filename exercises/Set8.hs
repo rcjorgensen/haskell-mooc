@@ -430,11 +430,11 @@ instance Transform Flip where
 --
 -- Hint: you might need a constraint on the instance
 
-data Chain a b = Chain a b
+data Chain a b = Chain a b 
   deriving Show
 
-instance Transform (Chain a b) where
-  apply = todo
+instance (Transform a, Transform b) => Transform (Chain a b) where
+  apply (Chain a b) p = apply a (apply b p)
 ------------------------------------------------------------------------------
 
 -- Now we can redefine largeVerticalStripes using the above Transforms.
@@ -472,7 +472,20 @@ data Blur = Blur
   deriving Show
 
 instance Transform Blur where
-  apply = todo
+  apply b (Picture p) = Picture f where
+    f(Coord x y) = divColor (foldr sumColor black [p (Coord (x) (y)), p (Coord (x-1) (y)), p (Coord (x+1) (y)), p (Coord (x) (y-1)), p (Coord (x) (y+1)) ]) 5
+    -- f (Coord x y) = divColor (sumColor (p (Coord (x) (y)))
+    --  (sumColor (p (Coord (x-1) (y)))
+    --   (sumColor (p (Coord (x+1) (y)))
+    --   (sumColor (p (Coord (x) (y-1))) (p (Coord (x) (y+1))))))
+    --   ) 5
+
+
+sumColor :: Color -> Color -> Color
+sumColor (Color r1 g1 b1) (Color r2 g2 b2) = Color (r1+r2) (g1+g2) (b1+b2)
+
+divColor :: Color -> Int -> Color
+divColor (Color r1 g1 b1) i = Color (div r1 i) (g1 `div` i) (b1 `div` i)
 ------------------------------------------------------------------------------
 
 ------------------------------------------------------------------------------
@@ -490,7 +503,8 @@ data BlurMany = BlurMany Int
   deriving Show
 
 instance Transform BlurMany where
-  apply = todo
+  apply (BlurMany 0) p = p
+  apply (BlurMany n) p = apply Blur (apply (BlurMany (n - 1)) p)
 ------------------------------------------------------------------------------
 
 -- Here's a blurred version of our original snowman. See it by running

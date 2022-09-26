@@ -24,7 +24,7 @@ data Time = Time Double
 data Velocity = Velocity Double
   deriving (Show,Eq)
 
--- velocity computes a velocity given a distance and a time
+-- -- velocity computes a velocity given a distance and a time
 velocity :: Distance -> Time -> Velocity
 velocity (Distance d) (Time t) = Velocity (d / t)
 
