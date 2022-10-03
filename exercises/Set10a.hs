@@ -16,7 +16,8 @@ import Mooc.Todo
 --   take 10 (doublify [0..])  ==>  [0,0,1,1,2,2,3,3,4,4]
 
 doublify :: [a] -> [a]
-doublify = todo
+doublify [] = []
+doublify (x:xs) = x:x:doublify xs
 
 ------------------------------------------------------------------------------
 -- Ex 2: Implement the function interleave that takes two lists and
@@ -37,7 +38,9 @@ doublify = todo
 --   take 10 (interleave [1..] (repeat 0)) ==> [1,0,2,0,3,0,4,0,5,0]
 
 interleave :: [a] -> [a] -> [a]
-interleave = todo
+interleave xs [] = xs
+interleave [] ys = ys
+interleave (x:xs) (y:ys) = x : y : interleave xs ys
 
 ------------------------------------------------------------------------------
 -- Ex 3: Deal out cards. Given a list of players (strings), and a list
@@ -56,7 +59,7 @@ interleave = todo
 -- Hint: remember the functions cycle and zip?
 
 deal :: [String] -> [String] -> [(String,String)]
-deal = todo
+deal players cards = zip cards (cycle players)
 
 ------------------------------------------------------------------------------
 -- Ex 4: Compute a running average. Go through a list of Doubles and
@@ -74,7 +77,17 @@ deal = todo
 
 
 averages :: [Double] -> [Double]
-averages = todo
+averages numlist = map average (tail (heads [] numlist))
+    
+average :: [Double] -> Double
+average xs = (sum xs) / (fromIntegral (length xs)) 
+
+heads2 :: [Double] -> [[Double]]
+heads2 xs = [take i xs | i <- [1..]]
+
+heads :: [Double] -> [Double] -> [[Double]]
+heads soFar [] = [soFar]
+heads soFar (x:xs) = soFar:(heads (soFar ++ [x]) xs) 
 
 ------------------------------------------------------------------------------
 -- Ex 5: Given two lists, xs and ys, and an element z, generate an
