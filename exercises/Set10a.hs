@@ -105,7 +105,17 @@ heads soFar (x:xs) = soFar:(heads (soFar ++ [x]) xs)
 --   take 10 (alternate [1,2] [3,4,5] 0) ==> [1,2,0,3,4,5,0,1,2,0]
 
 alternate :: [a] -> [a] -> a -> [a]
-alternate xs ys z = todo
+alternate x y z = alternateHelper 1 x y z
+
+-- alternate :: [a] -> [a] -> a -> [a]
+-- alternate [] [] z = z:(alternate [] [] z)
+-- alternate xs ys z = (concat [xs, [z], ys, [z]]) ++ (alternate xs ys z)
+
+alternateHelper :: Int -> [a] -> [a] -> a -> [a] 
+alternateHelper 1 x y z = x ++ alternateHelper 2 x y z
+alternateHelper 2 x y z = z : alternateHelper 3 x y z
+alternateHelper 3 x y z = y ++ alternateHelper 4 x y z
+alternateHelper 4 x y z = z : alternateHelper 1 x y z
 
 ------------------------------------------------------------------------------
 -- Ex 6: Check if the length of a list is at least n. Make sure your
