@@ -127,7 +127,9 @@ alternateHelper 4 x y z = z : alternateHelper 1 x y z
 --   lengthAtLeast 10 [0..]  ==> True
 
 lengthAtLeast :: Int -> [a] -> Bool
-lengthAtLeast = todo
+lengthAtLeast 0 _ = True
+lengthAtLeast n [] = False
+lengthAtLeast n (x:xs) = lengthAtLeast (n-1) xs 
 
 ------------------------------------------------------------------------------
 -- Ex 7: The function chunks should take in a list, and a number n,
