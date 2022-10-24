@@ -147,7 +147,9 @@ lengthAtLeast n (x:xs) = lengthAtLeast (n-1) xs
 --   take 4 (chunks 3 [0..]) ==> [[0,1,2],[1,2,3],[2,3,4],[3,4,5]]
 
 chunks :: Int -> [a] -> [[a]]
-chunks = todo
+chunks n x = if lengthAtLeast n x 
+             then take n x : chunks n (tail x) 
+             else []
 
 ------------------------------------------------------------------------------
 -- Ex 8: Define a newtype called IgnoreCase, that wraps a value of
@@ -163,7 +165,18 @@ chunks = todo
 --   ignorecase "abC" == ignorecase "ABc"  ==>  True
 --   ignorecase "acC" == ignorecase "ABc"  ==>  False
 
-ignorecase = todo
+
+newtype IgnoreCase = IgnoreCaseHeeHee String
+
+instance Eq IgnoreCase where
+    (==) (IgnoreCaseHeeHee a) (IgnoreCaseHeeHee b) = (toLowerString a) == (toLowerString b) 
+
+ignorecase :: String -> IgnoreCase
+ignorecase x = IgnoreCaseHeeHee x
+
+toLowerString :: String -> String
+toLowerString [] = []
+toLowerString (x:xs) = (Data.Char.toLower x):(toLowerString xs)
 
 ------------------------------------------------------------------------------
 -- Ex 9: Here's the Room type and some helper functions from the
