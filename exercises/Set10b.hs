@@ -22,7 +22,8 @@ import Mooc.Todo
 --   False ||| undefined ==> an error!
 
 (|||) :: Bool -> Bool -> Bool
-x ||| y = todo
+x ||| False = x
+x ||| True = True
 
 ------------------------------------------------------------------------------
 -- Ex 2: Define the function boolLength, that returns the length of a
@@ -36,7 +37,10 @@ x ||| y = todo
 --   length [False,undefined] ==> 2
 
 boolLength :: [Bool] -> Int
-boolLength xs = todo
+boolLength x = go 0 x
+  where go n (True:ys) = go (n+1) ys
+        go n (False:ys) = go (n+1) ys
+        go n [] = n
 
 ------------------------------------------------------------------------------
 -- Ex 3: Define the function validate which, given a predicate and a
