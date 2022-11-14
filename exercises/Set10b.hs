@@ -54,7 +54,9 @@ boolLength x = go 0 x
 --   validate (\x -> undefined) 3  ==>  an error!
 
 validate :: (a -> Bool) -> a -> a
-validate predicate value = todo
+validate predicate value 
+  | predicate value = value
+  | otherwise       = value
 
 ------------------------------------------------------------------------------
 -- Ex 4: Even though we can't implement the generic seq function
@@ -88,10 +90,13 @@ class MySeq a where
   myseq :: a -> b -> b
 
 instance MySeq Bool where
-  myseq = todo
+  myseq True x = x
+  myseq False x = x
 
 instance MySeq Int where
-  myseq = todo
+  myseq 0 x = x
+  myseq _ x = x
 
 instance MySeq [a] where
-  myseq = todo
+  myseq [] x = x
+  myseq _ x = x
