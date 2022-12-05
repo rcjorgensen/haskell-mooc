@@ -34,7 +34,10 @@ hello = do
 -- argument and prints a line "HELLO name".
 
 greet :: String -> IO ()
-greet name = todo
+greet name = do 
+                putStr "HELLO "
+                putStr name
+                putStr "\n"
 
 ------------------------------------------------------------------------------
 -- Ex 3: define the IO operation greet2 that reads a name from the
