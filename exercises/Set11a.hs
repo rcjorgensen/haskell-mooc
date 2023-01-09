@@ -65,7 +65,7 @@ greet2 = do
 readWords :: Int -> IO [String]
 readWords n = do
         input <- replicateM n getLine 
-        return (Data.List.sort input)
+        return (sort input)
 
 ------------------------------------------------------------------------------
 -- Ex 5: define the IO operation readUntil f, which reads lines from
@@ -82,13 +82,28 @@ readWords n = do
 --   ["bananas","garlic","pakchoi"]
 
 readUntil :: (String -> Bool) -> IO [String]
-readUntil f = todo
+readUntil f = do
+                x <- getLine
+                if f x then return []
+                        else addToIOList x (readUntil f)
 
+                                --do
+                                --y <- readUntil f
+                                --return (x:y)
+
+addToIOList :: String -> IO [String] -> IO [String]
+addToIOList s ios = do 
+        ss <- ios
+        return (s : ss)
 ------------------------------------------------------------------------------
 -- Ex 6: given n, print the numbers from n to 0, one per line
 
 countdownPrint :: Int -> IO ()
-countdownPrint n = todo
+countdownPrint n
+        | n == 0   = do print n 
+        | n > 0    = do
+                        print n
+                        countdownPrint (n-1)
 
 ------------------------------------------------------------------------------
 -- Ex 7: isums n should read n numbers from the user (one per line) and
