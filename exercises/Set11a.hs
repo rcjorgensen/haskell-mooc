@@ -87,6 +87,7 @@ readUntil f = do
                 if f x then return []
                         else addToIOList x (readUntil f)
 
+
                                 --do
                                 --y <- readUntil f
                                 --return (x:y)
@@ -100,7 +101,7 @@ addToIOList s ios = do
 
 countdownPrint :: Int -> IO ()
 countdownPrint n
-        | n == 0   = do print n 
+        | n == 0   = print n 
         | n > 0    = do
                         print n
                         countdownPrint (n-1)
@@ -118,7 +119,14 @@ countdownPrint n
 --   5. produces 9
 
 isums :: Int -> IO Int
-isums n = todo
+isums n = go n 0
+  where go n s 
+                | n == 0 = return s
+                | otherwise = do 
+                        i <- readLn
+                        let next = s + i
+                        print next
+                        go (n-1) next
 
 ------------------------------------------------------------------------------
 -- Ex 8: when is a useful function, but its first argument has type
@@ -126,7 +134,11 @@ isums n = todo
 -- argument has type IO Bool.
 
 whenM :: IO Bool -> IO () -> IO ()
-whenM cond op = todo
+whenM cond op = do
+                boolio <- cond
+                when boolio op
+                --if boolio then op
+                --else return ()
 
 ------------------------------------------------------------------------------
 -- Ex 9: implement the while loop. while condition operation should
@@ -146,7 +158,13 @@ ask = do putStrLn "Y/N?"
          return $ line == "Y"
 
 while :: IO Bool -> IO () -> IO ()
-while cond op = todo
+while cond op = do 
+        boolio <- cond
+        if boolio 
+        then do
+                op
+                while cond op
+        else return ()
 
 ------------------------------------------------------------------------------
 -- Ex 10: given a string and an IO operation, print the string, run
@@ -166,4 +184,9 @@ while cond op = todo
 --     4. returns the line read from the user
 
 debug :: String -> IO a -> IO a
-debug s op = todo
+debug s op = do
+                putStrLn s
+                val <- op
+                putStrLn s
+                return val
+
