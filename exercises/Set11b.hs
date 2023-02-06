@@ -88,8 +88,11 @@ doubleCall op = do
 --   3. return the result (of type b)
 
 compose :: (a -> IO b) -> (c -> IO a) -> c -> IO b
-compose op1 op2 c = todo
-
+compose op1 op2 c = do
+                        x <- op2 c
+                        y <- op1 x
+                        return y
+                        
 ------------------------------------------------------------------------------
 -- Ex 5: Reading lines from a file. The module System.IO defines
 -- operations for Handles, which represent open files that can be read
@@ -118,7 +121,12 @@ compose op1 op2 c = todo
 --   ["module Set11b where","","import Control.Monad"]
 
 hFetchLines :: Handle -> IO [String]
-hFetchLines = todo
+hFetchLines h = do isEOF <- hIsEOF h
+                   if isEOF 
+                   then return []
+                   else do line <- hGetLine h
+                           lines <- hFetchLines h
+                           return (line:lines)
 
 ------------------------------------------------------------------------------
 -- Ex 6: Given a Handle and a list of line indexes, produce the lines
