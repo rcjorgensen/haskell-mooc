@@ -58,6 +58,11 @@ instance Functor Result where
   fmap f NoResult = NoResult
   fmap f (Failure s) = Failure s
 
+-- instance Foldable Result where
+--   foldr f initialValue (MkResult x) = x `f` initialValue
+--   foldr f initialValue NoResult = initialValue
+--   foldr f initialValue (Failure s) = initialValue
+  
 ------------------------------------------------------------------------------
 -- Ex 4: Here's a reimplementation of the Haskell list type. You might
 -- remember it from Set6. Implement the instance Functor List.
@@ -86,7 +91,9 @@ data TwoList a = TwoEmpty | TwoNode a a (TwoList a)
   deriving Show
 
 instance Functor TwoList where
-
+  fmap f TwoEmpty = TwoEmpty
+  fmap f (TwoNode x y rest) = TwoNode (f x) (f y) (fmap f rest)
+  
 ------------------------------------------------------------------------------
 -- Ex 6: Count all occurrences of a given element inside a Foldable.
 --
@@ -98,7 +105,10 @@ instance Functor TwoList where
 --   count 'c' (Just 'c') ==> 1
 
 count :: (Eq a, Foldable f) => a -> f a -> Int
-count = todo
+count x xs = let countIf a b = if a == x 
+                               then b + 1 
+                               else b 
+             in foldr countIf 0 xs
 
 ------------------------------------------------------------------------------
 -- Ex 7: Return all elements that are in two Foldables, as a list.
@@ -109,7 +119,8 @@ count = todo
 --   inBoth Nothing [3]    ==> []
 
 inBoth :: (Foldable f, Foldable g, Eq a) => f a -> g a -> [a]
-inBoth = todo
+inBoth xs ys = let foldrx x subresult = if count x ys > 0 then x:subresult else subresult in 
+              foldr (foldrx) [] xs
 
 ------------------------------------------------------------------------------
 -- Ex 8: Implement the instance Foldable List.
@@ -122,7 +133,8 @@ inBoth = todo
 --   length (LNode 1 (LNode 2 (LNode 3 Empty))) ==> 3
 
 instance Foldable List where
-  foldr = todo
+  foldr f initialValue Empty = initialValue
+  foldr f initialValue (LNode x rest) = f x (foldr f initialValue rest)
 
 ------------------------------------------------------------------------------
 -- Ex 9: Implement the instance Foldable TwoList.
