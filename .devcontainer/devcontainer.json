@@ -1,0 +1,14 @@
+{
+    "build": {
+        "dockerfile": "Dockerfile"
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-vsliveshare.vsliveshare",
+                "ms-azuretools.vscode-docker",
+                "justusadam.language-haskell"
+            ]
+        }
+    }
+}
