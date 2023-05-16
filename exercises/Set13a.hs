@@ -45,20 +45,29 @@ readNames s =
 -- (NB! There are obviously other corner cases like the inputs " " and
 -- "a b c", but you don't need to worry about those here)
 split :: String -> Maybe (String,String)
-split = todo
-
+split s = if elem ' ' s 
+          then Just ((takeWhile (/=' ') s), (drop 1 (dropWhile (/=' ') s)))
+          else Nothing
+  
 -- checkNumber should take a pair of two strings and return them
 -- unchanged if they don't contain numbers. Otherwise Nothing is
 -- returned.
 checkNumber :: (String, String) -> Maybe (String, String)
-checkNumber = todo
+checkNumber (s1, s2) 
+  | foldr (\x y -> y || elem x s1 || elem x s2) False (map (\n -> head (show n)) [0..9]) = Nothing
+  | otherwise = Just (s1,s2)
 
 -- checkCapitals should take a pair of two strings and return them
 -- unchanged if both start with a capital letter. Otherwise Nothing is
 -- returned.
 checkCapitals :: (String, String) -> Maybe (String, String)
-checkCapitals (for,sur) = todo
+checkCapitals (for,sur) = if Data.Char.isUpper (head for) && Data.Char.isUpper (head sur) 
+                          then Just (for,sur) 
+                          else Nothing
 
+
+-- | foldr (\x y -> y || x == take 1 s1 || x == take 1 s2 ) False ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','Æ','Ø','Å']) = Just (s1,s2)
+--  | otherwise = Nothing
 ------------------------------------------------------------------------------
 -- Ex 2: Given a list of players and their scores (as [(String,Int)]),
 -- and two player names, return the name of the player who has more
