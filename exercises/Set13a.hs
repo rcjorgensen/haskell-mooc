@@ -93,7 +93,18 @@ checkCapitals (for,sur) = if Data.Char.isUpper (head for) && Data.Char.isUpper (
 --     ==> Just "a"
 
 winner :: [(String,Int)] -> String -> String -> Maybe String
-winner scores player1 player2 = todo
+winner' scores player1 player2 = let v1 = lookup player1 scores
+                                     v2 = lookup player2 scores
+                                  in v1 ?> (\v -> v2 ?> (\w -> if v>=w 
+                                                              then Just player1 
+                                                              else Just player2
+                                                      )
+                                          )
+
+winner scores player1 player2 = do
+  v <- lookup player1 scores
+  w <- lookup player2 scores
+  if v>=w then return player1 else return player2
 
 ------------------------------------------------------------------------------
 -- Ex 3: given a list of indices and a list of values, return the sum
@@ -111,7 +122,13 @@ winner scores player1 player2 = todo
 --    Nothing
 
 selectSum :: Num a => [a] -> [Int] -> Maybe a
-selectSum xs is = todo
+selectSum xs [] = 0
+selectSum xs (i:is) = safeIndex xs i >>= \x -> selectSum xs is >>= \y -> return x + y
+
+safeIndex :: [a] -> Int -> Maybe a
+safeIndex xs i
+  | i>= 0 and i < lenth(xs) = Just (i : xs)
+  | otherwise  = Nothing
 
 ------------------------------------------------------------------------------
 -- Ex 4: Here is the Logger monad from the course material. Implement
