@@ -122,14 +122,17 @@ winner scores player1 player2 = do
 --    Nothing
 
 selectSum :: Num a => [a] -> [Int] -> Maybe a
-selectSum xs [] = 0
-selectSum xs (i:is) = safeIndex xs i >>= \x -> selectSum xs is >>= \y -> return x + y
+selectSum xs [] = Just 0
+--selectSum xs (i:is) = safeIndex xs i >>= \x -> selectSum xs is >>= \y -> return (x + y)
+selectSum xs (i:is) = do x <- safeIndex xs i
+                         y <- selectSum xs is
+                         return (x + y)
 
+--safeIndex is zeroindexed
 safeIndex :: [a] -> Int -> Maybe a
 safeIndex xs i
-  | i>= 0 and i < lenth(xs) = Just (i : xs)
+  | i >= 0 && i < length(xs) = Just (xs !! i)
   | otherwise  = Nothing
-
 ------------------------------------------------------------------------------
 -- Ex 4: Here is the Logger monad from the course material. Implement
 -- the operation countAndLog which produces the number of elements
