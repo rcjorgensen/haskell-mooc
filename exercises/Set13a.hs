@@ -165,8 +165,16 @@ instance Applicative Logger where
   (<*>) = ap
 
 countAndLog :: Show a => (a -> Bool) -> [a] -> Logger Int
-countAndLog = todo
+countAndLog filter [] = Logger [] 0
+countAndLog filter (x:xs)
+  -- | filter x  = do
+  --                 msg (show x)
+  --                 res <- countAndLog filter xs
+  --                 return (res+1)
+  | filter x = msg (show x) >>= \_ -> countAndLog filter xs >>= \res -> return (res+1)
+  | otherwise = countAndLog filter xs
 
+  
 ------------------------------------------------------------------------------
 -- Ex 5: You can find the Bank and BankOp code from the course
 -- material in the module Examples.Bank (file
