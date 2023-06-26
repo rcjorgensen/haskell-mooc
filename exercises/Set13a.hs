@@ -190,7 +190,12 @@ exampleBank :: Bank
 exampleBank = (Bank (Map.fromList [("harry",10),("cedric",7),("ginny",1)]))
 
 balance :: String -> BankOp Int
-balance accountName = todo
+balance accountName = BankOp (balance' accountName)
+
+-- Bank (Map.Map String Int)
+balance' :: String -> Bank -> (Int, Bank)
+balance' accountName (Bank map) = case Map.lookup accountName map of Just b -> (b, Bank map)
+                                                                     Nothing -> (0, Bank map)
 
 ------------------------------------------------------------------------------
 -- Ex 6: Using the operations balance, withdrawOp and depositOp, and
