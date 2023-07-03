@@ -213,7 +213,7 @@ balance' accountName (Bank map) = case Map.lookup accountName map of Just b -> (
 --     ==> ((),Bank (fromList [("cedric",7),("ginny",1),("harry",10)]))
 
 rob :: String -> String -> BankOp ()
-rob from to = todo
+rob from to = balance from +> \x -> withdrawOp from x +> \_ -> depositOp to x
 
 ------------------------------------------------------------------------------
 -- Ex 7: using the State monad, write the operation `update` that first
