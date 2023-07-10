@@ -225,7 +225,7 @@ rob from to = balance from +> \x -> withdrawOp from x +> \_ -> depositOp to x
 --    ==> ((),7)
 
 update :: State Int ()
-update = todo
+update = state (\s -> ((), s * 2 + 1))
 
 ------------------------------------------------------------------------------
 -- Ex 8: Checking that parentheses are balanced with the State monad.
@@ -253,7 +253,11 @@ update = todo
 --   parensMatch "(()))("      ==> False
 
 paren :: Char -> State Int ()
-paren = todo
+paren c = state (\i -> ((), go c i))
+          where go _ (-1) = -1
+                go '(' i = i+1
+                go ')' i = i-1
+                go _ i = i
 
 parensMatch :: String -> Bool
 parensMatch s = count == 0
@@ -284,7 +288,18 @@ parensMatch s = count == 0
 -- PS. The order of the list of pairs doesn't matter
 
 count :: Eq a => a -> State [(a,Int)] ()
-count x = todo
+count x = do
+            originalDict <- get
+            let newDict = updateDict x originalDict
+            put newDict
+          --state (\dict -> ((),dict++[(x,1)])) -- put originalDict++[(x,1)]
+            
+updateDict :: Eq a => a -> [(a, Int)] -> [(a, Int)]
+updateDict x ((a,n):xs) = if x == a then (a,n+1):xs else (a,n) : (updateDict x xs)
+updateDict x [] = [(x, 1)]
+--put :: s -> State s ()
+--get :: State s s
+--modify :: (s -> s) -> State s ()
 
 ------------------------------------------------------------------------------
 -- Ex 10: Implement the operation occurrences, which
@@ -305,5 +320,12 @@ count x = todo
 --  runState (occurrences [4,7]) [(2,1),(3,1)]
 --    ==> (4,[(2,1),(3,1),(4,1),(7,1)])
 
+-- mapM :: Monad m => (a -> m b) -> [a] -> m [b]  -- do something on a list's elements
+
+-- a -> State [(a,Int)] ()
 occurrences :: (Eq a) => [a] -> State [(a,Int)] Int
-occurrences xs = todo
+occurrences xs = do mapM count xs
+                    dict <- get
+                    let l = length dict
+                    return l
+                    --state (\dict -> (length (dictNow++dict),dictNow++dict))     
