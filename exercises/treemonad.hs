@@ -50,8 +50,11 @@ instance Monad MultiTree  where
     t >>= f      = mu f t
     return x            = eta x
 
---multitreesum :: MultiTree a -> a
---multitreesum (MultiTree t br) = t + Data.List.sum (map multitreesum br)
+data Bee a = MaleBee a | FemaleBee a
+    deriving Show
+
+multitreesum :: MultiTree Integer -> Integer
+multitreesum (MultiTree t br) = t + (Data.List.sum (map multitreesum br))
 
 {- class Monad m where
   (>>=) :: m a -> (a -> m b) -> m b
@@ -74,6 +77,20 @@ t = MultiTree 1 [MultiTree 2 [], MultiTree 3 []]
 tfunc :: a -> (MultiTree a)
 tfunc x = MultiTree x [MultiTree x [], MultiTree x []]
 
+
+beefunc :: (Bee Bool) -> (MultiTree (Bee Bool))
+beefunc (FemaleBee True) = MultiTree (FemaleBee True) []
+beefunc (MaleBee True) = MultiTree (MaleBee True) []
+beefunc (FemaleBee False) = MultiTree (FemaleBee True) [MultiTree (FemaleBee False) [], MultiTree (MaleBee False) []]
+beefunc (MaleBee False) = MultiTree (MaleBee True) [MultiTree (FemaleBee False) []]
+
+
+beestarttree = MultiTree (MaleBee False) []
+
+bee = MultiTree 1 [MultiTree 1000 []] >>= (\x -> if x == 1 
+                                                                then MultiTree (x) [MultiTree (1) [], MultiTree (1000) []]
+                                                                else MultiTree (x) [MultiTree (1000) []])
+
 main :: IO ()
 main  = do  
             print("repetition fra lister")
@@ -86,6 +103,8 @@ main  = do
             print ("fmap", fmap (*2) t)
             print ("applicative functor", (MultiTree (*2) [MultiTree (+100) [], MultiTree (+1000) []]) <*> t)
             print ("monad", t  >>= (\x -> MultiTree (x*2) [MultiTree (x+100) [], MultiTree (x+1000) []]))
+            
+            print ("bee example", bee)
 
 
 
