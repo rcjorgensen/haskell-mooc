@@ -87,6 +87,14 @@ beefunc (MaleBee False) = MultiTree (MaleBee True) [MultiTree (FemaleBee False) 
 
 beestarttree = MultiTree (MaleBee False) []
 
+beecount :: (MultiTree (Bee Bool)) -> Integer
+beecount (MultiTree n []) = 1
+beecount (MultiTree n br) = 1 + sum (map beecount br)
+
+-- beecount(beestarttree >>= beefunc >>= beefunc >>= beefunc)
+-- https://wild.maths.org/fibonacci-and-bees
+
+
 bee = MultiTree 1 [MultiTree 1000 []] >>= (\x -> if x == 1 
                                                                 then MultiTree (x) [MultiTree (1) [], MultiTree (1000) []]
                                                                 else MultiTree (x) [MultiTree (1000) []])
