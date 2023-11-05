@@ -142,16 +142,36 @@ maze1 = [("Entry",["Pit","Corridor 1"])
 --   runState (visit maze1 "Entry") ["Corridor 1"]
 --     ==> ((),["Pit","Entry","Corridor 1"])
 
+updateVisited :: String -> [String] -> [String]
+updateVisited place places = if (elem place places) then places else (place : places)
+
+getNeighbours :: [(String, [String])] -> String -> [String]
+getNeighbours [] _ = []
+getNeighbours ((candidate, neighbours):ms) place = if candidate == place then neighbours else getNeighbours ms place
+
+--fst :: (a, b) -> a
+--snd :: (a, b) -> b
 
 visit :: [(String,[String])] -> String -> State [String] ()
-visit maze place = todo
+visit maze place = do places <- get
+                      if (elem place places) 
+                      then return () -- put places back into the state without modifying
+                      else do put (place : places)
+                              let neighbours = getNeighbours maze place 
+                              mapM_ (visit maze) neighbours
+
+--mapM :: Monad m => (a -> m b) -> [a] -> m [b]  -- do something on a list's elements
+--mapM_ :: Monad m => (a -> m b) -> [a] -> m ()  -- same, but ignore the results
+
+-- modify :: (s -> s) -> State s ()
+-- modify f = State (\state -> ((), f state))
 
 -- Now you should be able to implement path using visit. If you run
 -- visit on a place using an empty state, you'll get a state that
 -- lists all the places that are reachable from the starting place.
 
 path :: [(String,[String])] -> String -> String -> Bool
-path maze place1 place2 = todo
+path maze place1 place2 = elem place2 (snd (runState (visit maze place1) []))
 
 ------------------------------------------------------------------------------
 -- Ex 4: Given two lists, ks and ns, find numbers i and j from ks,
