@@ -178,6 +178,8 @@ path maze place1 place2 = elem place2 (snd (runState (visit maze place1) []))
 -- such that their sum i+j=n is in ns. Return all such triples
 -- (i,j,n).
 --
+-- { (i, j, i + j) | i, j in ks, i + j in ns}
+--
 -- Use the list monad!
 --
 -- Examples:
@@ -187,7 +189,10 @@ path maze place1 place2 = elem place2 (snd (runState (visit maze place1) []))
 -- PS. The tests don't care about the order of results.
 
 findSum2 :: [Int] -> [Int] -> [(Int,Int,Int)]
-findSum2 ks ns = todo
+--findSum2 ks ns = [(i,j,i+j) | i <- ks, j <- ks, elem (i+j) ns]
+findSum2 ks ns = do i <- ks
+                    j <- ks
+                    if (elem (i+j) ns) then return (i,j,i+j) else [] 
 
 ------------------------------------------------------------------------------
 -- Ex 5: compute all possible sums of elements from the given
@@ -208,7 +213,11 @@ findSum2 ks ns = todo
 --     ==> [7,3,5,1,6,2,4,0]
 
 allSums :: [Int] -> [Int]
-allSums xs = todo
+allSums [] = [0]
+allSums (x:xs) = do b <- [0, x]
+                    s <- allSums xs
+                    return (b+s)
+
 
 ------------------------------------------------------------------------------
 -- Ex 6: the standard library defines the function
@@ -238,7 +247,11 @@ sumBounded :: Int -> [Int] -> Maybe Int
 sumBounded k xs = foldM (f1 k) 0 xs
 
 f1 :: Int -> Int -> Int -> Maybe Int
-f1 k acc x = todo
+f1 k acc x = let r = acc + x 
+             in if r > k then Nothing else Just r 
+--k bound
+--acc sumSoFar
+--x nextElement
 
 -- sumNotTwice computes the sum of a list, but counts only the first
 -- occurrence of each value.
@@ -252,7 +265,11 @@ sumNotTwice :: [Int] -> Int
 sumNotTwice xs = fst $ runState (foldM f2 0 xs) []
 
 f2 :: Int -> Int -> State [Int] Int
-f2 acc x = todo
+f2 acc x = do seenSoFar <- get
+              if not (elem x seenSoFar) then do
+                                put (x:seenSoFar) 
+                                return (acc + x)
+              else return acc
 
 ------------------------------------------------------------------------------
 -- Ex 7: here is the Result type from Set12. Implement a Monad Result
