@@ -294,7 +294,9 @@ data Result a = MkResult a | NoResult | Failure String deriving (Show,Eq)
 
 instance Functor Result where
   -- The same Functor instance you used in Set12 works here.
-  fmap = todo
+  fmap f (MkResult x) = MkResult (f x)
+  fmap f NoResult = NoResult
+  fmap f (Failure s) = Failure s
 
 -- This is an Applicative instance that works for any monad, you
 -- can just ignore it for now. We'll get back to Applicative later.
@@ -304,8 +306,10 @@ instance Applicative Result where
 
 instance Monad Result where
   -- implement return and >>=
-  return = todo
-  (>>=) = todo
+  return x = MkResult x
+  (MkResult x) >>= f = f x
+  NoResult >>= _ = NoResult
+  (Failure s) >>= _ = Failure s
 
 ------------------------------------------------------------------------------
 -- Ex 8: Here is the type SL that combines the State and Logger
@@ -351,9 +355,13 @@ putSL s' = SL (\s -> ((),s',[]))
 modifySL :: (Int->Int) -> SL ()
 modifySL f = SL (\s -> ((),f s,[]))
 
+--SL (Int -> (a,Int,[String]))
 instance Functor SL where
   -- implement fmap
-  fmap = todo
+  -- f :: a -> b
+  fmap f op = SL h
+                 where h state = let (value, state, log) = runSL op state
+                                 in ((f value), state, log)
 
 -- This is an Applicative instance that works for any monad, you
 -- can just ignore it for now. We'll get back to Applicative later.
@@ -363,9 +371,13 @@ instance Applicative SL where
 
 instance Monad SL where
   -- implement return and >>=
-  return = todo
-  (>>=) = todo
-
+  return x = SL (\i -> (x,i,[]))
+  op >>= f = SL h
+                where h state0 = let (value1, state1, log1) = runSL op state0
+                                     op2 = f value1
+                                     (value2, state2, log2) = runSL op2 state1
+                                  in (value2, state2, log1 ++ log2)
+--(value2, state2, log1 ++ log2)
 ------------------------------------------------------------------------------
 -- Ex 9: Implement the operation mkCounter that produces the IO operations
 -- inc :: IO () and get :: IO Int. These operations should work like this:
