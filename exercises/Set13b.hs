@@ -360,7 +360,7 @@ instance Functor SL where
   -- implement fmap
   -- f :: a -> b
   fmap f op = SL h
-                 where h state = let (value, state, log) = runSL op state
+                 where h state0 = let (value, state, log) = runSL op state0
                                  in ((f value), state, log)
 
 -- This is an Applicative instance that works for any monad, you
@@ -377,7 +377,7 @@ instance Monad SL where
                                      op2 = f value1
                                      (value2, state2, log2) = runSL op2 state1
                                   in (value2, state2, log1 ++ log2)
---(value2, state2, log1 ++ log2)
+
 ------------------------------------------------------------------------------
 -- Ex 9: Implement the operation mkCounter that produces the IO operations
 -- inc :: IO () and get :: IO Int. These operations should work like this:
@@ -404,4 +404,6 @@ instance Monad SL where
 --  4
 
 mkCounter :: IO (IO (), IO Int)
-mkCounter = todo
+mkCounter = do  r <- newIORef 0
+                let inc = modifyIORef r (+1)
+                return (inc, readIORef r)
