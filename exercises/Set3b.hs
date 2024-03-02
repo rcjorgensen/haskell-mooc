@@ -143,20 +143,25 @@ merge (x:xs) (y:ys)
     | otherwise = y : merge (x:xs) ys
 
 ------------------------------------------------------------------------------
--- Ex 8: define the function mymaximum that takes a list and a
--- function bigger :: a -> a -> Bool and returns the
--- biggest of the list, according to the comparing function.
+-- Ex 8: compute the biggest element, using a comparison function
+-- passed as an argument.
 --
--- An initial biggest value is provided to give you something to
--- return for empty lists.
+-- That is, implement the function mymaximum that takes
+--
+-- * a function `bigger` :: a -> a -> Bool
+-- * a value `initial` of type a
+-- * a list `xs` of values of type a
+--
+-- and returns the biggest value it sees, considering both `initial`
+-- and all element in `xs`.
 --
 -- Examples:
 --   mymaximum (>) 3 [] ==> 3
 --   mymaximum (>) 0 [1,3,2] ==> 3
 --   mymaximum (>) 4 [1,3,2] ==> 4    -- initial value was biggest
 --   mymaximum (<) 4 [1,3,2] ==> 1    -- note changed biggerThan
---   mymaximum (\xs ys -> length xs > length ys) [] [[1,2],[3]]
---     ==> [1,2]
+--   mymaximum (\(a,b) (c,d) -> b > d) ("",0) [("Banana",7),("Mouse",8)]
+--     ==> ("Mouse",8)
 
 mymaximum :: (a -> a -> Bool) -> a -> [a] -> a
 mymaximum bigger initial []     = initial

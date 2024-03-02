@@ -291,7 +291,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2 data-number="1.5" id="lets-start"><span class="header-section-number">1.5</span> Let’s Start!</h2>
 <p>GHCi is the interactive Haskell interpreter. Here’s an example session:</p>
 <pre><code>$ stack ghci
-GHCi, version 8.0.1: http://www.haskell.org/ghc/  :? for help
+GHCi, version 9.2.8: https://www.haskell.org/ghc/  :? for help
 Prelude&gt; 1+1
 2
 Prelude&gt; &quot;asdf&quot;
@@ -882,13 +882,14 @@ fib 5        ==>          |           |
 <span id="cb70-22"><a href="#cb70-22" aria-hidden="true" tabindex="-1"></a><span class="co">-- end of recursion, return longest length found</span></span>
 <span id="cb70-23"><a href="#cb70-23" aria-hidden="true" tabindex="-1"></a>longest&#39; number _ <span class="dv">0</span> <span class="ot">=</span> number</span>
 <span id="cb70-24"><a href="#cb70-24" aria-hidden="true" tabindex="-1"></a><span class="co">-- recursion step: check if n has a longer Collatz sequence than the current known longest</span></span>
-<span id="cb70-25"><a href="#cb70-25" aria-hidden="true" tabindex="-1"></a>longest&#39; number maxlength n <span class="ot">=</span> <span class="kw">if</span> <span class="fu">length</span> <span class="op">&gt;</span> maxlength</span>
-<span id="cb70-26"><a href="#cb70-26" aria-hidden="true" tabindex="-1"></a>               <span class="kw">then</span> longest&#39; n <span class="fu">length</span> (n<span class="op">-</span><span class="dv">1</span>)</span>
-<span id="cb70-27"><a href="#cb70-27" aria-hidden="true" tabindex="-1"></a>               <span class="kw">else</span> longest&#39; number maxlength (n<span class="op">-</span><span class="dv">1</span>)</span>
-<span id="cb70-28"><a href="#cb70-28" aria-hidden="true" tabindex="-1"></a>  <span class="kw">where</span> <span class="fu">length</span> <span class="ot">=</span> collatz n</span></code></pre></div>
+<span id="cb70-25"><a href="#cb70-25" aria-hidden="true" tabindex="-1"></a>longest&#39; number maxlength n <span class="ot">=</span></span>
+<span id="cb70-26"><a href="#cb70-26" aria-hidden="true" tabindex="-1"></a>  <span class="kw">if</span> len <span class="op">&gt;</span> maxlength</span>
+<span id="cb70-27"><a href="#cb70-27" aria-hidden="true" tabindex="-1"></a>  <span class="kw">then</span> longest&#39; n len (n<span class="op">-</span><span class="dv">1</span>)</span>
+<span id="cb70-28"><a href="#cb70-28" aria-hidden="true" tabindex="-1"></a>  <span class="kw">else</span> longest&#39; number maxlength (n<span class="op">-</span><span class="dv">1</span>)</span>
+<span id="cb70-29"><a href="#cb70-29" aria-hidden="true" tabindex="-1"></a>  <span class="kw">where</span> len <span class="ot">=</span> collatz n</span></code></pre></div>
 <p>We can load the program in GHCi and play with it.</p>
 <pre><code>$ stack ghci
-GHCi, version 8.2.2: http://www.haskell.org/ghc/  :? for help
+GHCi, version 9.2.8: https://www.haskell.org/ghc/  :? for help
 Prelude&gt; :load Collatz.hs
 [1 of 1] Compiling Collatz          ( Collatz.hs, interpreted )
 Ok, one module loaded.
@@ -1061,6 +1062,11 @@ Because <code>`...`</code> is used for delimiting strings.
 <p>Once you’ve cloned the <code>haskell-mooc</code> repository, go into the <code>exercises</code> directory. To download and build dependencies needed for running the exercise tests (such as the correct version of GHC and various libraries), run following command in your terminal:</p>
 <div class="sourceCode" id="cb79"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> stack build</span></code></pre></div>
 <p>Do note that the dependencies are multiple gigabytes and it will take a while for the command to finish.</p>
+<p><strong>Note!</strong> Here are some fixes for common problems with <code>stack build</code>:</p>
+<ul>
+<li>If you get an error like <code>While building package zlib-0.6.2.3</code>, you need to install the zlib library headers. The right command for Ubuntu is <code>sudo apt install zlib1g-dev</code>.</li>
+<li>If you get an error like <code>Downloading lts-18.18 build plan ... RedownloadInvalidResponse</code>, your version of stack is too old. Run <code>stack upgrade</code> to get a newer one.</li>
+</ul>
 <p>There are primarily two types of files in the <code>exercises</code> directory: exercise sets named <code>SetNX.hs</code> and accompanying test program for the exercises named <code>SetNXTest.hs</code>. Both are Haskell source files, but only the exercise file should to be edited when solving the exercises. Instructions to all individual exercises are embedded in the exercise file as comments.</p>
 <p>Use the tests file to check your answers. For example when you have solved some of the exercises in <code>Set1.hs</code>, run the following command:</p>
 <div class="sourceCode" id="cb80"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> stack runhaskell Set1Test.hs</span></code></pre></div>
@@ -1114,7 +1120,7 @@ quadruple 1
 <p>In the example above, I’ve made a mistake in exercise 3.</p>
 <p>To make debugging faster and more straightforward, I can load my exercise file in GHCi, which allows me to evaluate any top-level function manually. For instance I can verify the above mistake by:</p>
 <pre><code>$ stack ghci Set1.hs
-GHCi, version 8.6.5: http://www.haskell.org/ghc/  :? for help
+GHCi, version 9.2.8: https://www.haskell.org/ghc/  :? for help
 [1 of 2] Compiling Mooc.Todo        ( Mooc/Todo.hs, interpreted )
 [2 of 2] Compiling Set1             ( Set1.hs, interpreted )
 Ok, two modules loaded.
@@ -1263,15 +1269,16 @@ Ok, two modules loaded.
 <h3 data-number="2.3.1" id="list-operations"><span class="header-section-number">2.3.1</span> List Operations</h3>
 <p>The Haskell standard library comes with lots of functions that operate on lists. Here are some of the most important ones, together with their types. We’ll get back to what <code>[a]</code> actually means in a second, but for now you can imagine it means “any list”.</p>
 <div class="sourceCode" id="cb99"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb99-1"><a href="#cb99-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span><span class="ot"> ::</span> [a] <span class="ot">-&gt;</span> a            <span class="co">-- returns the first element</span></span>
-<span id="cb99-2"><a href="#cb99-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tail</span><span class="ot"> ::</span> [a] <span class="ot">-&gt;</span> [a]          <span class="co">-- returns everything except the first element</span></span>
-<span id="cb99-3"><a href="#cb99-3" aria-hidden="true" tabindex="-1"></a><span class="fu">init</span><span class="ot"> ::</span> [a] <span class="ot">-&gt;</span> [a]          <span class="co">-- returns everything except the last element</span></span>
-<span id="cb99-4"><a href="#cb99-4" aria-hidden="true" tabindex="-1"></a><span class="fu">take</span><span class="ot"> ::</span> <span class="dt">Int</span> <span class="ot">-&gt;</span> [a] <span class="ot">-&gt;</span> [a]   <span class="co">-- returns the n first elements</span></span>
-<span id="cb99-5"><a href="#cb99-5" aria-hidden="true" tabindex="-1"></a><span class="fu">drop</span><span class="ot"> ::</span> <span class="dt">Int</span> <span class="ot">-&gt;</span> [a] <span class="ot">-&gt;</span> [a]   <span class="co">-- returns everything except the n first elements</span></span>
-<span id="cb99-6"><a href="#cb99-6" aria-hidden="true" tabindex="-1"></a><span class="ot">(++) ::</span> [a] <span class="ot">-&gt;</span> [a] <span class="ot">-&gt;</span> [a]   <span class="co">-- lists are catenated with the ++ operator</span></span>
-<span id="cb99-7"><a href="#cb99-7" aria-hidden="true" tabindex="-1"></a><span class="ot">(!!) ::</span> [a] <span class="ot">-&gt;</span> <span class="dt">Int</span> <span class="ot">-&gt;</span> a     <span class="co">-- lists are indexed with the !! operator</span></span>
-<span id="cb99-8"><a href="#cb99-8" aria-hidden="true" tabindex="-1"></a><span class="fu">reverse</span><span class="ot"> ::</span> [a] <span class="ot">-&gt;</span> [a]       <span class="co">-- reverse a list</span></span>
-<span id="cb99-9"><a href="#cb99-9" aria-hidden="true" tabindex="-1"></a><span class="fu">null</span><span class="ot"> ::</span> [a] <span class="ot">-&gt;</span> <span class="dt">Bool</span>         <span class="co">-- is this list empty?</span></span>
-<span id="cb99-10"><a href="#cb99-10" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span><span class="ot"> ::</span> [a] <span class="ot">-&gt;</span> <span class="dt">Int</span>        <span class="co">-- the length of a list</span></span></code></pre></div>
+<span id="cb99-2"><a href="#cb99-2" aria-hidden="true" tabindex="-1"></a><span class="fu">last</span><span class="ot"> ::</span> [a] <span class="ot">-&gt;</span> a            <span class="co">-- returns the last element</span></span>
+<span id="cb99-3"><a href="#cb99-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tail</span><span class="ot"> ::</span> [a] <span class="ot">-&gt;</span> [a]          <span class="co">-- returns everything except the first element</span></span>
+<span id="cb99-4"><a href="#cb99-4" aria-hidden="true" tabindex="-1"></a><span class="fu">init</span><span class="ot"> ::</span> [a] <span class="ot">-&gt;</span> [a]          <span class="co">-- returns everything except the last element</span></span>
+<span id="cb99-5"><a href="#cb99-5" aria-hidden="true" tabindex="-1"></a><span class="fu">take</span><span class="ot"> ::</span> <span class="dt">Int</span> <span class="ot">-&gt;</span> [a] <span class="ot">-&gt;</span> [a]   <span class="co">-- returns the n first elements</span></span>
+<span id="cb99-6"><a href="#cb99-6" aria-hidden="true" tabindex="-1"></a><span class="fu">drop</span><span class="ot"> ::</span> <span class="dt">Int</span> <span class="ot">-&gt;</span> [a] <span class="ot">-&gt;</span> [a]   <span class="co">-- returns everything except the n first elements</span></span>
+<span id="cb99-7"><a href="#cb99-7" aria-hidden="true" tabindex="-1"></a><span class="ot">(++) ::</span> [a] <span class="ot">-&gt;</span> [a] <span class="ot">-&gt;</span> [a]   <span class="co">-- lists are catenated with the ++ operator</span></span>
+<span id="cb99-8"><a href="#cb99-8" aria-hidden="true" tabindex="-1"></a><span class="ot">(!!) ::</span> [a] <span class="ot">-&gt;</span> <span class="dt">Int</span> <span class="ot">-&gt;</span> a     <span class="co">-- lists are indexed with the !! operator</span></span>
+<span id="cb99-9"><a href="#cb99-9" aria-hidden="true" tabindex="-1"></a><span class="fu">reverse</span><span class="ot"> ::</span> [a] <span class="ot">-&gt;</span> [a]       <span class="co">-- reverse a list</span></span>
+<span id="cb99-10"><a href="#cb99-10" aria-hidden="true" tabindex="-1"></a><span class="fu">null</span><span class="ot"> ::</span> [a] <span class="ot">-&gt;</span> <span class="dt">Bool</span>         <span class="co">-- is this list empty?</span></span>
+<span id="cb99-11"><a href="#cb99-11" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span><span class="ot"> ::</span> [a] <span class="ot">-&gt;</span> <span class="dt">Int</span>        <span class="co">-- the length of a list</span></span></code></pre></div>
 <p>Sidenote: the last two operations (<code>null</code> and <code>length</code>) actually have more generic types, but here I’m pretending that you can only use them on lists.</p>
 <p>Lists can be compared with the familiar <code>==</code> operator.</p>
 <p>Do you remember this from our first GHCi session?</p>
@@ -1530,7 +1537,7 @@ lectureParticipants = [Right 10, Right 13, Left &quot;easter vacation&quot;, Rig
 <span id="cb136-4"><a href="#cb136-4" aria-hidden="true" tabindex="-1"></a>  <span class="op">|</span> n <span class="op">==</span> <span class="dv">5</span> <span class="ot">=</span> <span class="st">&quot;You&#39;re one day closer to weekend!&quot;</span></span>
 <span id="cb136-5"><a href="#cb136-5" aria-hidden="true" tabindex="-1"></a>  <span class="op">|</span> n <span class="op">&gt;</span> <span class="dv">1</span> <span class="ot">=</span> <span class="fu">show</span> (n <span class="op">-</span> <span class="dv">1</span>) <span class="op">++</span> <span class="st">&quot; more day(s) until the weekend!&quot;</span></span>
 <span id="cb136-6"><a href="#cb136-6" aria-hidden="true" tabindex="-1"></a>  <span class="op">|</span> <span class="fu">otherwise</span> <span class="ot">=</span> <span class="st">&quot;Relax! You don&#39;t need to work today!&quot;</span></span>
-<span id="cb136-7"><a href="#cb136-7" aria-hidden="true" tabindex="-1"></a>  <span class="kw">where</span> n <span class="ot">=</span> distanceToSunday day <span class="op">-</span> <span class="dv">1</span></span></code></pre></div>
+<span id="cb136-7"><a href="#cb136-7" aria-hidden="true" tabindex="-1"></a>  <span class="kw">where</span> n <span class="ot">=</span> distanceToSunday day</span></code></pre></div>
 <p>We’ll see in a moment how we can define <code>distanceToSunday</code> using equations and <code>case</code> expressions.</p>
 <p>Secondly, if a helper function needs to be shared among many patterns, then equations don’t work. For example:</p>
 <div class="sourceCode" id="cb137"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb137-1"><a href="#cb137-1" aria-hidden="true" tabindex="-1"></a><span class="ot">area ::</span> <span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">Double</span> <span class="ot">-&gt;</span> <span class="dt">Double</span></span>
@@ -2100,11 +2107,11 @@ Prelude&gt; map (add 3) [1,2,3]
 <span id="cb239-6"><a href="#cb239-6" aria-hidden="true" tabindex="-1"></a><span class="op">==&gt;</span> <span class="dv">2</span><span class="op">*</span><span class="dv">1</span> <span class="op">:</span> (<span class="dv">2</span><span class="op">*</span><span class="dv">2</span> <span class="op">:</span> (<span class="dv">2</span><span class="op">*</span><span class="dv">3</span> <span class="op">:</span> []))</span>
 <span id="cb239-7"><a href="#cb239-7" aria-hidden="true" tabindex="-1"></a><span class="op">===</span> [<span class="dv">2</span><span class="op">*</span><span class="dv">1</span>, <span class="dv">2</span><span class="op">*</span><span class="dv">2</span>, <span class="dv">2</span><span class="op">*</span><span class="dv">3</span>]</span>
 <span id="cb239-8"><a href="#cb239-8" aria-hidden="true" tabindex="-1"></a><span class="op">==&gt;</span> [<span class="dv">2</span>,<span class="dv">4</span>,<span class="dv">6</span>]</span></code></pre></div>
-<p>Once you know pattern matching for lists, it’s straightforward to define <code>map</code> and <code>filter</code>. Actually, let’s just look at the GHC standard library implementations. <a href="https://hackage.haskell.org/package/base-4.14.1.0/docs/src/GHC.Base.html#map">Here’s map</a>:</p>
+<p>Once you know pattern matching for lists, it’s straightforward to define <code>map</code> and <code>filter</code>. Actually, let’s just look at the GHC standard library implementations. <a href="https://hackage.haskell.org/package/base-4.16.4.0/docs/src/GHC.Base.html#map">Here’s map</a>:</p>
 <div class="sourceCode" id="cb240"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb240-1"><a href="#cb240-1" aria-hidden="true" tabindex="-1"></a><span class="fu">map</span><span class="ot"> ::</span> (a <span class="ot">-&gt;</span> b) <span class="ot">-&gt;</span> [a] <span class="ot">-&gt;</span> [b]</span>
 <span id="cb240-2"><a href="#cb240-2" aria-hidden="true" tabindex="-1"></a><span class="fu">map</span> _ []     <span class="ot">=</span> []</span>
 <span id="cb240-3"><a href="#cb240-3" aria-hidden="true" tabindex="-1"></a><span class="fu">map</span> f (x<span class="op">:</span>xs) <span class="ot">=</span> f x <span class="op">:</span> <span class="fu">map</span> f xs</span></code></pre></div>
-<p>and <a href="https://hackage.haskell.org/package/base-4.14.1.0/docs/src/GHC.List.html#filter">here’s filter</a>:</p>
+<p>and <a href="https://hackage.haskell.org/package/base-4.16.4.0/docs/src/GHC.List.html#filter">here’s filter</a>:</p>
 <div class="sourceCode" id="cb241"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb241-1"><a href="#cb241-1" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span><span class="ot"> ::</span> (a <span class="ot">-&gt;</span> <span class="dt">Bool</span>) <span class="ot">-&gt;</span> [a] <span class="ot">-&gt;</span> [a]</span>
 <span id="cb241-2"><a href="#cb241-2" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span> _pred []    <span class="ot">=</span> []</span>
 <span id="cb241-3"><a href="#cb241-3" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span> <span class="fu">pred</span> (x<span class="op">:</span>xs)</span>
@@ -2152,7 +2159,7 @@ Prelude&gt; map (add 3) [1,2,3]
 <p>List comprehensions can do even more. You can iterate over multiple lists:</p>
 <div class="sourceCode" id="cb249"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb249-1"><a href="#cb249-1" aria-hidden="true" tabindex="-1"></a>[ first <span class="op">++</span> <span class="st">&quot; &quot;</span> <span class="op">++</span> <span class="fu">last</span> <span class="op">|</span> first <span class="ot">&lt;-</span> [<span class="st">&quot;John&quot;</span>, <span class="st">&quot;Mary&quot;</span>], <span class="fu">last</span> <span class="ot">&lt;-</span> [<span class="st">&quot;Smith&quot;</span>,<span class="st">&quot;Cooper&quot;</span>] ]</span>
 <span id="cb249-2"><a href="#cb249-2" aria-hidden="true" tabindex="-1"></a>  <span class="op">==&gt;</span> [<span class="st">&quot;John Smith&quot;</span>,<span class="st">&quot;John Cooper&quot;</span>,<span class="st">&quot;Mary Smith&quot;</span>,<span class="st">&quot;Mary Cooper&quot;</span>]</span></code></pre></div>
-<p>You can make local defitions:</p>
+<p>You can make local definitions:</p>
 <div class="sourceCode" id="cb250"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb250-1"><a href="#cb250-1" aria-hidden="true" tabindex="-1"></a>[ reversed <span class="op">|</span> word <span class="ot">&lt;-</span> [<span class="st">&quot;this&quot;</span>,<span class="st">&quot;is&quot;</span>,<span class="st">&quot;a&quot;</span>,<span class="st">&quot;string&quot;</span>], <span class="kw">let</span> reversed <span class="ot">=</span> <span class="fu">reverse</span> word ]</span>
 <span id="cb250-2"><a href="#cb250-2" aria-hidden="true" tabindex="-1"></a>  <span class="op">==&gt;</span> [<span class="st">&quot;siht&quot;</span>,<span class="st">&quot;si&quot;</span>,<span class="st">&quot;a&quot;</span>,<span class="st">&quot;gnirts&quot;</span>]</span></code></pre></div>
 <p>You can even do pattern matching in list comprehensions!</p>
@@ -2361,13 +2368,13 @@ unspecified
 <li>
 unspecified
 </li>
-<li class="correct">
+<li>
 <code>(c -&gt; a -&gt; b) -&gt; a</code>
 </li>
 <li class="correct">
 <code>c -&gt; (a -&gt; b -&gt; a)</code>
 </li>
-<li class="correct">
+<li>
 <code>a -&gt; b -&gt; c -&gt; a</code>
 </li>
 </ol>
@@ -2757,7 +2764,7 @@ unspecified
 <p><code>Data.Map</code> defines all sorts of useful higher-order functions for updating maps. We can rewrite the <code>withdraw</code> function using <code>Data.Map.adjust</code>:</p>
 <div class="sourceCode" id="cb315"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb315-1"><a href="#cb315-1" aria-hidden="true" tabindex="-1"></a><span class="ot">withdraw ::</span> <span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">Int</span> <span class="ot">-&gt;</span> <span class="dt">Map.Map</span> <span class="dt">String</span> <span class="dt">Int</span> <span class="ot">-&gt;</span> <span class="dt">Map.Map</span> <span class="dt">String</span> <span class="dt">Int</span></span>
 <span id="cb315-2"><a href="#cb315-2" aria-hidden="true" tabindex="-1"></a>withdraw account amount bank <span class="ot">=</span> Map.adjust (\x <span class="ot">-&gt;</span> x<span class="op">-</span>amount) account bank</span></code></pre></div>
-<p><strong>Note!</strong> There are separate <code>Data.Map.Strict</code> and <code>Data.Map.Lazy</code> implementations. When you import <code>Data.Map</code> you get <code>Data.Map.Lazy</code>. You can find the documentation for all the <code>Data.Map</code> functions in <a href="https://hackage.haskell.org/package/containers-0.6.2.1/docs/Data-Map-Lazy.html">the docs for <code>Data.Map.Lazy</code></a>. We won’t go into their differences here, but mostly you should use <code>Data.Map.Strict</code> in real code.</p>
+<p><strong>Note!</strong> There are separate <code>Data.Map.Strict</code> and <code>Data.Map.Lazy</code> implementations. When you import <code>Data.Map</code> you get <code>Data.Map.Lazy</code>. You can find the documentation for all the <code>Data.Map</code> functions in <a href="https://hackage.haskell.org/package/containers-0.6.5.1/docs/Data-Map-Lazy.html">the docs for <code>Data.Map.Lazy</code></a>. We won’t go into their differences here, but mostly you should use <code>Data.Map.Strict</code> in real code.</p>
 <h3 data-number="4.6.2" id="data.array"><span class="header-section-number">4.6.2</span> <code>Data.Array</code></h3>
 <p>Another type that works kind of like a list but is more efficient for some operations is the array. Arrays are familiar from many other programming languages, but Haskell arrays are a bit different.</p>
 <p>Unlike the <code>Data.Map</code> module, the <code>Data.Array</code> can just be imported normally:</p>
@@ -2765,8 +2772,8 @@ unspecified
 <p>Now we can look at the type of the <code>array</code> function that constructs an array.</p>
 <div class="sourceCode" id="cb317"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb317-1"><a href="#cb317-1" aria-hidden="true" tabindex="-1"></a><span class="ot">array ::</span> <span class="dt">Ix</span> i <span class="ot">=&gt;</span> (i, i) <span class="ot">-&gt;</span> [(i, e)] <span class="ot">-&gt;</span> <span class="dt">Array</span> i e</span></code></pre></div>
 <p>There are a couple of things to notice here. First of all, the <code>Array</code> type is parameterized by <em>two</em> types: the index type and the element type. Most other programming languages only parameterize arrays with the element type, but the index type is always <code>int</code>. In Haskell, we can have, for example, an <code>Array Char Int</code>: an array indexed by characters, or <code>Array Bool String</code>, an array indexed by booleans, or even <code>Array (Int,Int) Int</code>, a two-dimensional array of ints.</p>
-<p>Not all types can be index types. Only types that are similar to integers are suitable. That is the reason for the <code>Ix i</code> class constraint. The <code>Ix</code> class collects all the types that can be used as array indexes.</p>
-<p>Secondly, the <code>array</code> function takes an extra <code>(i,i)</code> parameter. These are the minimun and maximum indexes of the array. Unlike some other languages, where arrays always start at index 0 or 1, in Haskell you can define an array that starts from 7 and goes to 11. So here’s that array:</p>
+<p>Not all types can be index types. Only types that are similar to integers are suitable. That is the reason for the <code>Ix i</code> class constraint. The <code>Ix</code> class collects all the types that can be used as array indices.</p>
+<p>Secondly, the <code>array</code> function takes an extra <code>(i,i)</code> parameter. These are the minimum and maximum indices of the array. Unlike some other languages, where arrays always start at index 0 or 1, in Haskell you can define an array that starts from 7 and goes to 11. So here’s that array:</p>
 <div class="sourceCode" id="cb318"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb318-1"><a href="#cb318-1" aria-hidden="true" tabindex="-1"></a><span class="ot">myArray ::</span> <span class="dt">Array</span> <span class="dt">Int</span> <span class="dt">String</span></span>
 <span id="cb318-2"><a href="#cb318-2" aria-hidden="true" tabindex="-1"></a>myArray <span class="ot">=</span> array (<span class="dv">7</span>,<span class="dv">11</span>) [(<span class="dv">7</span>,<span class="st">&quot;seven&quot;</span>), (<span class="dv">8</span>,<span class="st">&quot;eight&quot;</span>), (<span class="dv">9</span>,<span class="st">&quot;nine&quot;</span>), (<span class="dv">10</span>,<span class="st">&quot;ten&quot;</span>), (<span class="dv">11</span>,<span class="st">&quot;ELEVEN&quot;</span>)]</span></code></pre></div>
 <p>Listing all the indices and elements in order can be a bit cumbersome, so there’s also the <code>listArray</code> constructor that just takes a list of elements in order:</p>
@@ -2796,8 +2803,8 @@ unspecified
 <span id="cb323-3"><a href="#cb323-3" aria-hidden="true" tabindex="-1"></a><span class="fu">foldr</span> (<span class="op">+</span>) <span class="dv">0</span> (Map.fromList [(<span class="st">&quot;banana&quot;</span>,<span class="dv">3</span>),(<span class="st">&quot;egg&quot;</span>,<span class="dv">7</span>)])</span>
 <span id="cb323-4"><a href="#cb323-4" aria-hidden="true" tabindex="-1"></a>  <span class="op">==&gt;</span> <span class="dv">10</span></span></code></pre></div>
 <h2 data-number="4.7" id="reading-docs"><span class="header-section-number">4.7</span> Reading Docs</h2>
-<p>Haskell libraries tend to have pretty good docs. We’ve linked to docs via Hackage (<a href="https://hackage.haskell.org" class="uri">https://hackage.haskell.org</a>) previously, but it’s important to know how to find the docs by your self too. The tool for generating Haskell documentation is called <em>Haddock</em> so sometimes Haskell docs are referred to as <em>haddocks</em>.</p>
-<p>Hackage is the Haskell package repository (just like <a href="https://pypi.org/">PyPI</a> for Python, Maven Central for Java or <a href="https://npmjs.com">NPM</a> for Javascript). In addition to the actual packages, it hosts documentation for them. Most of the modules that we use on this course are in the package called <code>base</code>. You can browse the docs for the base package at <a href="https://hackage.haskell.org/package/base-4.14.1.0/" class="uri">https://hackage.haskell.org/package/base-4.14.1.0/</a>.</p>
+<p>Haskell libraries tend to have pretty good docs. We’ve linked to docs via Hackage (<a href="https://hackage.haskell.org" class="uri">https://hackage.haskell.org</a>) previously, but it’s important to know how to find the docs by yourself too. The tool for generating Haskell documentation is called <em>Haddock</em> so sometimes Haskell docs are referred to as <em>haddocks</em>.</p>
+<p>Hackage is the Haskell package repository (just like <a href="https://pypi.org/">PyPI</a> for Python, Maven Central for Java or <a href="https://npmjs.com">NPM</a> for Javascript). In addition to the actual packages, it hosts documentation for them. Most of the modules that we use on this course are in the package called <code>base</code>. You can browse the docs for the base package at <a href="https://hackage.haskell.org/package/base-4.16.4.0/" class="uri">https://hackage.haskell.org/package/base-4.16.4.0/</a>.</p>
 <p>When you’re not quite sure where the function you’re looking for is, Hoogle (<a href="https://hoogle.haskell.org/" class="uri">https://hoogle.haskell.org/</a>) can help. Hoogle is a search engine for Haskell documentation. It is a great resource when you need to check what was the type of <code>foldr</code> or which packages contain a function named <code>reverse</code>.</p>
 <p>Finally, since this course is using the <code>stack</code> tool, you can also browse the documentation for the libraries stack has installed for you with the commands</p>
 <pre><code>stack haddock --open
@@ -3430,7 +3437,7 @@ Because <code>Nothing</code> is a constructor.
 <span id="cb387-5"><a href="#cb387-5" aria-hidden="true" tabindex="-1"></a><span class="ot">  (/=) ::</span>  a <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> <span class="dt">Bool</span></span>
 <span id="cb387-6"><a href="#cb387-6" aria-hidden="true" tabindex="-1"></a>  x <span class="op">/=</span> y  <span class="ot">=</span> <span class="fu">not</span> (x <span class="op">==</span> y)</span></code></pre></div>
 <p>Note how both operations have a default implementation in terms of the other. This means we could define an <code>Eq</code> instance with no content at all, but the resulting functions would just recurse forever. In practice, we want to define at least one of <code>==</code> and <code>/=</code>.</p>
-<p>When there are lots of default implementations, it can be hard to know which functions you need to implement yourself. For this reason class documentation usually mentions the <em>minimal complete definition</em>. For <code>Eq</code>, <a href="https://hackage.haskell.org/package/base-4.14.1.0/docs/Prelude.html#t:Eq">the docs say</a> “Minimal complete definition: either == or /=.”</p>
+<p>When there are lots of default implementations, it can be hard to know which functions you need to implement yourself. For this reason class documentation usually mentions the <em>minimal complete definition</em>. For <code>Eq</code>, <a href="https://hackage.haskell.org/package/base-4.16.4.0/docs/Prelude.html#t:Eq">the docs say</a> “Minimal complete definition: either == or /=.”</p>
 <p>Let’s look at <code>Ord</code> next. <code>Ord</code> has 7 operations, all with default implementations in terms of each other. By the way, note the quirky way of defining multiple type signatures at once. It’s okay, it’s a feature of Haskell, this is how <code>Ord</code> is defined in <a href="https://www.haskell.org/onlinereport/haskell2010/haskellch6.html#x13-1270006.3">the standard</a>. (We’ll get back to what the <code>(Eq a) =&gt;</code> part means soon.)</p>
 <div class="sourceCode" id="cb388"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb388-1"><a href="#cb388-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span>  (<span class="dt">Eq</span> a) <span class="ot">=&gt;</span> <span class="dt">Ord</span> a  <span class="kw">where</span></span>
 <span id="cb388-2"><a href="#cb388-2" aria-hidden="true" tabindex="-1"></a><span class="ot">  compare              ::</span> a <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> <span class="dt">Ordering</span></span>
@@ -3450,7 +3457,7 @@ Because <code>Nothing</code> is a constructor.
 <span id="cb388-16"><a href="#cb388-16" aria-hidden="true" tabindex="-1"></a>          <span class="op">|</span> <span class="fu">otherwise</span> <span class="ot">=</span>  x</span>
 <span id="cb388-17"><a href="#cb388-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">min</span> x y <span class="op">|</span> x <span class="op">&lt;=</span> y    <span class="ot">=</span>  x</span>
 <span id="cb388-18"><a href="#cb388-18" aria-hidden="true" tabindex="-1"></a>          <span class="op">|</span> <span class="fu">otherwise</span> <span class="ot">=</span>  y</span></code></pre></div>
-<p>With this definition it’s really hard to know what the minimal complete definition is. Luckily the <a href="https://hackage.haskell.org/package/base-4.14.1.0/docs/Prelude.html#t:Ord">docs tell us</a> “Minimal complete definition: either compare or &lt;=.”</p>
+<p>With this definition it’s really hard to know what the minimal complete definition is. Luckily the <a href="https://hackage.haskell.org/package/base-4.16.4.0/docs/Prelude.html#t:Ord">docs tell us</a> “Minimal complete definition: either compare or &lt;=.”</p>
 <p>As a final word on default implementations, if there is never a need to override the default definition, the function can be moved out of the class for simplicity. Consider a class like <code>Combine</code> below:</p>
 <div class="sourceCode" id="cb389"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb389-1"><a href="#cb389-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> <span class="dt">Combine</span> a <span class="kw">where</span></span>
 <span id="cb389-2"><a href="#cb389-2" aria-hidden="true" tabindex="-1"></a><span class="ot">  combine ::</span> a <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> a</span>
@@ -3551,7 +3558,7 @@ Because <code>Nothing</code> is a constructor.
 <span id="cb400-5"><a href="#cb400-5" aria-hidden="true" tabindex="-1"></a>  check x <span class="ot">=</span> x <span class="op">&gt;</span> <span class="dv">0</span></span></code></pre></div>
 <p>Now we can write a function that checks a list. We use the standard library function <code>and :: [Bool] -&gt; Bool</code> that checks if a list is all <code>True</code>s.</p>
 <div class="sourceCode" id="cb401"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb401-1"><a href="#cb401-1" aria-hidden="true" tabindex="-1"></a><span class="ot">checkAll ::</span> <span class="dt">Check</span> a <span class="ot">=&gt;</span> [a] <span class="ot">-&gt;</span> <span class="dt">Bool</span></span>
-<span id="cb401-2"><a href="#cb401-2" aria-hidden="true" tabindex="-1"></a>checkAll <span class="ot">=</span> <span class="fu">and</span> (<span class="fu">map</span> check xs)</span></code></pre></div>
+<span id="cb401-2"><a href="#cb401-2" aria-hidden="true" tabindex="-1"></a>checkAll xs <span class="ot">=</span> <span class="fu">and</span> (<span class="fu">map</span> check xs)</span></code></pre></div>
 <p>In order to turn this into a <code>Check [a]</code> instance, we need to add a constraint to the instance declaration. Our <code>Check [a]</code> is based on the <code>Check a</code> instance.</p>
 <div class="sourceCode" id="cb402"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb402-1"><a href="#cb402-1" aria-hidden="true" tabindex="-1"></a><span class="kw">instance</span> <span class="dt">Check</span> a <span class="ot">=&gt;</span> <span class="dt">Check</span> [a] <span class="kw">where</span></span>
 <span id="cb402-2"><a href="#cb402-2" aria-hidden="true" tabindex="-1"></a>  check xs <span class="ot">=</span> <span class="fu">and</span> (<span class="fu">map</span> check xs)</span></code></pre></div>
@@ -3741,7 +3748,7 @@ If I define an instance for <code>Num</code>, I also get an instance for <code>F
 <span id="cb414-3"><a href="#cb414-3" aria-hidden="true" tabindex="-1"></a>sortPersons <span class="dt">Age</span> <span class="dt">Descending</span> persons</span>
 <span id="cb414-4"><a href="#cb414-4" aria-hidden="true" tabindex="-1"></a>  <span class="op">==&gt;</span> [<span class="dt">Person</span> {name <span class="ot">=</span> <span class="st">&quot;Fridolf&quot;</span>, age <span class="ot">=</span> <span class="dv">73</span>},<span class="dt">Person</span> {name <span class="ot">=</span> <span class="st">&quot;Hans&quot;</span>, age <span class="ot">=</span> <span class="dv">65</span>},<span class="dt">Person</span> {name <span class="ot">=</span> <span class="st">&quot;Greta&quot;</span>, age <span class="ot">=</span> <span class="dv">60</span>}]</span></code></pre></div>
 <p>Note how you can’t accidentally typo the field name (unlike with strings), and how you don’t need to remember whether <code>true</code> refers to ascending or descending order.</p>
-<p>Let’s move on to the next example. Many Haskell functions don’t work with empty lists (consider <code>head []</code>). If you’re writing code that needs to track whether lists are possibly empty or guaranteed to not be empty, you can use the <code>NonEmpty</code> type from the <a href="https://hackage.haskell.org/package/base-4.14.1.0/docs/Data-List-NonEmpty.html">Data.List.NonEmpty</a> module.</p>
+<p>Let’s move on to the next example. Many Haskell functions don’t work with empty lists (consider <code>head []</code>). If you’re writing code that needs to track whether lists are possibly empty or guaranteed to not be empty, you can use the <code>NonEmpty</code> type from the <a href="https://hackage.haskell.org/package/base-4.16.4.0/docs/Data-List-NonEmpty.html">Data.List.NonEmpty</a> module.</p>
 <p>Consider the definition of <code>NonEmpty</code>:</p>
 <div class="sourceCode" id="cb415"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb415-1"><a href="#cb415-1" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> <span class="dt">NonEmpty</span> a <span class="ot">=</span> a <span class="op">:|</span> [a]</span></code></pre></div>
 <p>Here the type represents a <em>lack of</em> cases. The type <code>NonEmpty a</code> will always consist of a value of type <code>a</code>, and some further <code>a</code>s, collected in a list. Here are some example values of <code>NonEmpty Int</code>:</p>
@@ -3805,6 +3812,7 @@ If I define an instance for <code>Num</code>, I also get an instance for <code>F
 <span id="cb426-6"><a href="#cb426-6" aria-hidden="true" tabindex="-1"></a><span class="kw">instance</span> <span class="dt">Num</span> a <span class="ot">=&gt;</span> <span class="dt">Semigroup</span> (<span class="dt">Product</span> a) <span class="kw">where</span></span>
 <span id="cb426-7"><a href="#cb426-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">Product</span> a <span class="op">&lt;&gt;</span> <span class="dt">Product</span> b   <span class="ot">=</span>  <span class="dt">Product</span> (a<span class="op">*</span>b)</span></code></pre></div>
 <p>By the way, this is another benefit of boxing things: being able to declare different type class instances!</p>
+<p>Note how the <code>Num a</code> constraint lets us use <code>Num</code> operations like <code>+</code> and <code>*</code> on the contained type <code>a</code>. We can have values like <code>Sum "abc" :: Sum String</code>, but they won’t have a <code>Semigroup</code> instance!</p>
 <p>Similarly, we have box types <code>Min</code> and <code>Max</code>. Let’s play around in GHCi a bit:</p>
 <div class="sourceCode" id="cb427"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb427-1"><a href="#cb427-1" aria-hidden="true" tabindex="-1"></a><span class="dt">Prelude</span><span class="op">&gt;</span> <span class="kw">import</span> <span class="dt">Data.Semigroup</span></span>
 <span id="cb427-2"><a href="#cb427-2" aria-hidden="true" tabindex="-1"></a><span class="dt">Prelude</span> <span class="dt">Data.Semigroup</span><span class="op">&gt;</span> <span class="dt">Product</span> (<span class="dv">2</span><span class="ot">::</span><span class="dt">Int</span>) <span class="op">&lt;&gt;</span> <span class="dt">Product</span> <span class="dv">3</span> <span class="op">&lt;&gt;</span> <span class="dt">Product</span> <span class="dv">1</span></span>
@@ -3835,10 +3843,10 @@ If I define an instance for <code>Num</code>, I also get an instance for <code>F
 <span id="cb429-2"><a href="#cb429-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">-- The neutral element</span></span>
 <span id="cb429-3"><a href="#cb429-3" aria-hidden="true" tabindex="-1"></a><span class="ot">  mempty ::</span> a</span></code></pre></div>
 <p>Here are the <code>Monoid</code> instances corresponding to our three examples of neutral elements:</p>
-<div class="sourceCode" id="cb430"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb430-1"><a href="#cb430-1" aria-hidden="true" tabindex="-1"></a><span class="kw">instance</span> <span class="dt">Monoid</span> (<span class="dt">Sum</span> a) <span class="kw">where</span></span>
+<div class="sourceCode" id="cb430"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb430-1"><a href="#cb430-1" aria-hidden="true" tabindex="-1"></a><span class="kw">instance</span> <span class="dt">Num</span> a <span class="ot">=&gt;</span> <span class="dt">Monoid</span> (<span class="dt">Sum</span> a) <span class="kw">where</span></span>
 <span id="cb430-2"><a href="#cb430-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mempty</span> <span class="ot">=</span> <span class="dt">Sum</span> <span class="dv">0</span></span>
 <span id="cb430-3"><a href="#cb430-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb430-4"><a href="#cb430-4" aria-hidden="true" tabindex="-1"></a><span class="kw">instance</span> <span class="dt">Monoid</span> (<span class="dt">Product</span> a) <span class="kw">where</span></span>
+<span id="cb430-4"><a href="#cb430-4" aria-hidden="true" tabindex="-1"></a><span class="kw">instance</span> <span class="dt">Num</span> a <span class="ot">=&gt;</span> <span class="dt">Monoid</span> (<span class="dt">Product</span> a) <span class="kw">where</span></span>
 <span id="cb430-5"><a href="#cb430-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mempty</span> <span class="ot">=</span> <span class="dt">Product</span> <span class="dv">1</span></span>
 <span id="cb430-6"><a href="#cb430-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb430-7"><a href="#cb430-7" aria-hidden="true" tabindex="-1"></a><span class="kw">instance</span> <span class="dt">Monoid</span> [] <span class="kw">where</span></span>
@@ -4079,8 +4087,8 @@ If I define an instance for <code>Num</code>, I also get an instance for <code>F
 <p><a href="https://haskell.mooc.fi/part2">Part 2 of the course</a> is now out! Part 2 will cover topics like Monads, IO and how Haskell works under the hood. We’ll also get to do some real world programming with networks and databases. Oh and testing in Haskell is also covered.</p>
 <p>If you don’t feel like jumping into part 2 right now, here are some other Haskell resources you should be able to follow now:</p>
 <ul>
-<li><a href="http://book.realworldhaskell.org/read/">Real World Haskell</a> - free e-book on advanced topics</li>
-<li><a href="http://dev.stephendiehl.com/hask/">What I Wish I Knew When Learning Haskell</a></li>
+<li><a href="https://book.realworldhaskell.org/read/">Real World Haskell</a> - free e-book on advanced topics</li>
+<li><a href="https://web.archive.org/web/20220513191346/http://dev.stephendiehl.com/hask/">What I Wish I Knew When Learning Haskell</a></li>
 <li><a href="https://en.wikibooks.org/wiki/Haskell">The Haskell Wikibook</a></li>
 <li><a href="https://www.haskell.org/">The Haskell Website</a> has links to talks and presentations</li>
 <li><a href="https://kowainik.github.io/posts/haskell-mini-patterns">Haskell mini-patterns handbook</a> - more stuff like Lecture 7</li>

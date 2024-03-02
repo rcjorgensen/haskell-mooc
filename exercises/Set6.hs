@@ -106,7 +106,8 @@ instance Price Milk where
   price (Milk l) = 15 * l
 
 ------------------------------------------------------------------------------
--- Ex 6: define the necessary instances in order to be able to compute these:
+-- Ex 6: define the necessary instance hierarchy in order to be able
+-- to compute these:
 --
 -- price (Just ChickenEgg) ==> 20
 -- price [Milk 1, Milk 2]  ==> 45
@@ -163,7 +164,7 @@ instance Eq RationalNumber where
   RationalNumber a b == RationalNumber c d = a * d == b * c
 
 ------------------------------------------------------------------------------
--- Ex 9: implement the function simplify, which simplifies rational a
+-- Ex 9: implement the function simplify, which simplifies a rational
 -- number by removing common factors of the numerator and denominator.
 -- In other words,
 --
